@@ -14,7 +14,7 @@ const Player = () => {
 
   return (
     <mesh castShadow receiveShadow ref={ref}>
-      <pointLight castShadow intensity={0.1} distance={0} decay={2} />
+      <pointLight castShadow intensity={0.1} distance={0} decay={4} />
       <sphereGeometry args={[0.25, 32]} />
       <meshPhongMaterial color='white' />
     </mesh>

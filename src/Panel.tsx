@@ -36,7 +36,7 @@ const Panel = () => {
   })
 
   return (
-    <Instances castShadow receiveShadow ref={ref} limit={num}>
+    <Instances castShadow ref={ref} limit={num}>
       <bufferGeometry>
         <bufferAttribute
           attachObject={["attributes", "position"]}
