@@ -1,7 +1,8 @@
 //@ts-nocheck
 import { useFrame } from "@react-three/fiber"
-import { useMemo, useRef } from "react"
+import { useLayoutEffect, useMemo, useRef } from "react"
 import * as THREE from "three"
+import { Instance, Instances } from "@react-three/drei"
 
 const num = 100
 const tempObject = new THREE.Object3D()
@@ -13,35 +14,29 @@ const Panel = () => {
   const vertices = useMemo(
     () =>
       new Float32Array([
-        -0.5, 0.5, 0.0, 0.5, 0.5, 0.0, -0.5, -0.5, 0.0, 0.5, -0.5, 0.0,
+        -0.25, 0.25, 0.0, 0.25, 0.25, 0.0, -0.25, -0.25, 0.0, 0.25, -0.25, 0.0,
       ])
   )
 
   const index = useMemo(() => new Uint16Array([0, 2, 1, 2, 3, 1]))
 
-  useFrame(({ mouse, viewport }) => {
-    const mouseX = (mouse.x * viewport.width) / 2
-    const mouseY = (mouse.y * viewport.height) / 2
+  const positions = useMemo(() => {
+    const positions = []
 
     for (let i = 0; i < num; i++) {
+      const tempPosition = new THREE.Vector3()
+
       const x = (i % 10) - 5
       const y = Math.floor(i / 10) - 5
       const z = 0
-
-      tempObject.position.set(x, y, z)
-      tempPos.set(mouseX, mouseY, 2)
-      tempObject.lookAt(tempPos)
-
-      tempObject.updateMatrix()
-
-      ref.current.setMatrixAt(i, tempObject.matrix)
+      positions[i] = tempPosition.set(x, y, z)
     }
 
-    ref.current.instanceMatrix.needsUpdate = true
+    return positions
   })
 
   return (
-    <instancedMesh ref={ref} args={[null, null, num]}>
+    <Instances castShadow receiveShadow ref={ref} limit={num}>
       <bufferGeometry>
         <bufferAttribute
           attachObject={["attributes", "position"]}
@@ -56,9 +51,26 @@ const Panel = () => {
           itemSize={1}
         />
       </bufferGeometry>
-      <meshBasicMaterial color='cyan' wireframe />
-    </instancedMesh>
+      <meshNormalMaterial side={THREE.DoubleSide} />
+      {positions.map((position, i) => (
+        <Pixel key={i} position={position} />
+      ))}
+    </Instances>
   )
+}
+
+const Pixel = ({ position }) => {
+  const ref = useRef()
+
+  useFrame(({ mouse, viewport }) => {
+    const x = (mouse.x * viewport.width) / 2
+    const y = (mouse.y * viewport.height) / 2
+
+    ref.current.position.set(...position)
+    ref.current.lookAt(x, y, 0)
+  })
+
+  return <Instance ref={ref} />
 }
 
 export default Panel
