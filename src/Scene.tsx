@@ -1,16 +1,16 @@
-import { OrbitControls } from "@react-three/drei"
+import { FirstPersonControls } from "@react-three/drei"
 import { Canvas } from "@react-three/fiber"
 import Panel from "./Panel"
-import Player from "./Player"
-import Plane from "./Plane"
+
+import { Suspense } from "react"
 
 const Scene = () => (
-  <Canvas shadows camera={{ position: [0, 0, 10] }}>
-    <OrbitControls />
+  <Canvas shadows camera={{ position: [0, 0, 50] }}>
+    <FirstPersonControls />
     <ambientLight intensity={0.1} />
-    <Player />
-    <Plane />
-    <Panel />
+    <Suspense fallback={null}>
+      <Panel />
+    </Suspense>
   </Canvas>
 )
 

@@ -1,76 +1,82 @@
 //@ts-nocheck
-import { useFrame } from "@react-three/fiber"
 import { useLayoutEffect, useMemo, useRef } from "react"
 import * as THREE from "three"
-import { Instance, Instances } from "@react-three/drei"
-
-const num = 100
-const tempObject = new THREE.Object3D()
-const tempPos = new THREE.Vector3()
+import Material from "./Material"
+import { useTexture } from "@react-three/drei"
 
 const Panel = () => {
   const ref = useRef(null!)
 
+  const texture = useTexture("bio.png")
+  const width = texture.image.width
+  const height = texture.image.height
+  const num = width * height
+
   const vertices = useMemo(
     () =>
       new Float32Array([
-        -0.25, 0.25, 0.0, 0.25, 0.25, 0.0, -0.25, -0.25, 0.0, 0.25, -0.25, 0.0,
-      ])
+        -0.5, 0.5, 0.0, 0.5, 0.5, 0.0, -0.5, -0.5, 0.0, 0.5, -0.5, 0.0,
+      ]),
+    []
   )
 
-  const index = useMemo(() => new Uint16Array([0, 2, 1, 2, 3, 1]))
+  const index = useMemo(() => new Uint16Array([0, 2, 1, 2, 3, 1]), [vertices])
 
-  const positions = useMemo(() => {
-    const positions = []
+  const { offsets, indices } = useMemo(() => {
+    const offsets = new Float32Array(num * 3)
+    const indices = new Uint16Array(num)
 
     for (let i = 0; i < num; i++) {
-      const tempPosition = new THREE.Vector3()
+      offsets[i * 3 + 0] = i % width
+      offsets[i * 3 + 1] = Math.floor(i / width)
+      offsets[i * 3 + 2] = 0
 
-      const x = (i % 10) - 5
-      const y = Math.floor(i / 10) - 5
-      const z = 0
-      positions[i] = tempPosition.set(x, y, z)
+      indices[i] = i
     }
 
-    return positions
+    return { offsets, indices }
+  }, [vertices])
+
+  const uvs = useMemo(
+    () => new Float32Array([0, 0, 0, 1.0, 1.0, 0, 1.0, 1.0]),
+    [vertices]
+  )
+
+  useLayoutEffect(() => {
+    ref.current.setMatrixAt(0, new THREE.Matrix4())
+    ref.current.instanceMatrix.needsUpdate = true
   })
 
   return (
-    <Instances castShadow ref={ref} limit={num}>
+    <instancedMesh
+      position={[-width / 2, -height / 2, 0]}
+      args={[null, null, num]}
+      ref={ref}
+    >
       <bufferGeometry>
         <bufferAttribute
           attachObject={["attributes", "position"]}
-          array={vertices}
-          count={vertices.length / 3}
-          itemSize={3}
+          args={[vertices, 3]}
         />
+        <bufferAttribute attachObject={["attributes", "uv"]} args={[uvs, 2]} />
         <bufferAttribute
           attach='index'
           array={index}
           count={index.length}
           itemSize={1}
         />
+        <instancedBufferAttribute
+          attachObject={["attributes", "offset"]}
+          args={[offsets, 3]}
+        />
+        <instancedBufferAttribute
+          attachObject={["attributes", "pindex"]}
+          args={[indices, 1]}
+        />
       </bufferGeometry>
-      <meshNormalMaterial side={THREE.DoubleSide} />
-      {positions.map((position, i) => (
-        <Pixel key={i} position={position} />
-      ))}
-    </Instances>
+      <Material texture={texture} />
+    </instancedMesh>
   )
-}
-
-const Pixel = ({ position }) => {
-  const ref = useRef()
-
-  useFrame(({ mouse, viewport }) => {
-    const x = (mouse.x * viewport.width) / 2
-    const y = (mouse.y * viewport.height) / 2
-
-    ref.current.position.set(...position)
-    ref.current.lookAt(x, y, 0)
-  })
-
-  return <Instance ref={ref} />
 }
 
 export default Panel
