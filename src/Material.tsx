@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import * as THREE from "three"
 import { useMemo, useRef } from "react"
 import { useFrame } from "@react-three/fiber"
