@@ -1,13 +1,13 @@
-//@ts-nocheck
+// @ts-nocheck
 import { useLayoutEffect, useMemo, useRef } from "react"
 import * as THREE from "three"
 import Material from "./Material"
 import { useTexture } from "@react-three/drei"
 
 const Panel = () => {
-  const ref = useRef(null!)
+  const ref = useRef<any>(null!)
 
-  const texture = useTexture("bio.png")
+  const texture = useTexture("one.png")
   const width = texture.image.width
   const height = texture.image.height
   const num = width * height
@@ -20,11 +20,12 @@ const Panel = () => {
     []
   )
 
-  const index = useMemo(() => new Uint16Array([0, 2, 1, 2, 3, 1]), [vertices])
+  const index = useMemo(() => new Uint16Array([0, 2, 1, 2, 3, 1]), [])
 
-  const { offsets, indices } = useMemo(() => {
+  const { offsets, indices, colors } = useMemo(() => {
     const offsets = new Float32Array(num * 3)
     const indices = new Uint16Array(num)
+    const colors = new Float32Array(num * 3)
 
     for (let i = 0; i < num; i++) {
       offsets[i * 3 + 0] = i % width
@@ -32,14 +33,23 @@ const Panel = () => {
       offsets[i * 3 + 2] = 0
 
       indices[i] = i
+
+      const tempColor =
+        Math.random() > 0.5
+          ? new THREE.Color("hotpink")
+          : new THREE.Color("blue")
+
+      colors[i * 3 + 0] = tempColor.r
+      colors[i * 3 + 1] = tempColor.g
+      colors[i * 3 + 2] = tempColor.b
     }
 
-    return { offsets, indices }
-  }, [vertices])
+    return { offsets, indices, colors }
+  }, [num, width])
 
   const uvs = useMemo(
     () => new Float32Array([0, 0, 0, 1.0, 1.0, 0, 1.0, 1.0]),
-    [vertices]
+    []
   )
 
   useLayoutEffect(() => {
@@ -72,6 +82,10 @@ const Panel = () => {
         <instancedBufferAttribute
           attachObject={["attributes", "pindex"]}
           args={[indices, 1]}
+        />
+        <instancedBufferAttribute
+          attachObject={["attributes", "pColor"]}
+          args={[colors, 3]}
         />
       </bufferGeometry>
       <Material texture={texture} />
