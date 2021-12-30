@@ -36,7 +36,7 @@ const Panel = () => {
     }
 
     return { offsets, indices }
-  }, [num, width])
+  }, [num, width, height])
 
   const uvs = useMemo(
     () => new Float32Array([0, 0, 0, 1.0, 1.0, 0, 1.0, 1.0]),
