@@ -36,7 +36,7 @@ export const vertexShader = /* glsl */ `
         particleuv = offset.xy / uTextureSize;
         vUv = uv; 
 
-        //_ get the darker image areas
+        //_ get the lighter image areas
         vec4 col = texture2D(uTexture, particleuv);
         float strength = col.r * 0.21 + col.g * 0.71 + col.b * 0.07;
 
@@ -48,16 +48,15 @@ export const vertexShader = /* glsl */ `
         displaced.z += (strength + noise(vec2(pindex * 0.1, uTime * 0.1))) * 40.0;
 
         //_ wave
-        float wave = 1.0 - step(0.3, abs(distance(particleuv, vec2(uMouse)) - 0.25));
-        displaced.xy += wave * 5.0;
-        displaced.z += wave * 10.0;
+        float wave = step(uMouse.y, particleuv.y);
+        displaced.xyz += wave * 10.0;
 
         //_ tails 
         float rightTails = smoothstep(0.82, 1.0, particleuv.x); 
-        float leftTails = 1.0 - smoothstep(0.0, 0.4, particleuv.x);
+        float leftTails = 1.0 - smoothstep(0.0, 0.3, particleuv.x);
 
         displaced.x += rightTails * 200.0 * (uMouse.x + 1.0);
-        displaced.x += leftTails * 5.0 * (uMouse.x - 1.0); 
+        displaced.x += leftTails * 200.0 * (uMouse.x - 1.0); 
   
         //_ scale the particles
         float psize = (noise(vec2(uTime, pindex) * 0.5) + 2.0);

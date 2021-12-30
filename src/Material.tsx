@@ -26,10 +26,10 @@ const Material = ({ texture }: any) => {
     const time = clock.getElapsedTime()
     ref.current.uniforms.uTime.value = time
 
-    const y = mouse.y / 2 + 1
-    const x = THREE.MathUtils.lerp(
-      ref.current.uniforms.uMouse.value.x,
-      mouse.x,
+    const x = mouse.x
+    const y = THREE.MathUtils.lerp(
+      ref.current.uniforms.uMouse.value.y,
+      mouse.y,
       0.1
     )
 
