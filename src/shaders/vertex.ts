@@ -21,6 +21,7 @@ export const vertexShader = /* glsl */ `
     varying vec2 vUv; 
     varying float vTime; 
     varying float vWave;
+    varying float vWaveEdge; 
 
 
     float random(float n) {
@@ -49,7 +50,10 @@ export const vertexShader = /* glsl */ `
 
         //_ interaction
         float wave = step(uMouse.y, particleuv.y);
+        float waveEdge = step(uMouse.y, particleuv.y) + (1.0 - step(uMouse.y + 0.01, particleuv.y)) - 1.0;
+
         displaced.xyz += wave * 10.0;
+        displaced.z += waveEdge * 10.0;
 
         //_ tails 
         float rightTails = smoothstep(0.82, 1.0, particleuv.x); 
@@ -71,5 +75,6 @@ export const vertexShader = /* glsl */ `
         //_ pass the varyings
         vTime = uTime; 
         vWave = wave; 
+        vWaveEdge = waveEdge; 
     }
 `

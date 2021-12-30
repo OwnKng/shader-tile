@@ -16,7 +16,7 @@ const Material = ({ texture }: any) => {
       uTextureSize: { value: new THREE.Vector2(image.width, image.height) },
       uRandom: { value: 10.0 },
       uDepth: { value: 2.0 },
-      uMouse: { value: new THREE.Vector2(0, 0) },
+      uMouse: { value: new THREE.Vector2(0.2, 0.5) },
     }),
     [texture, image]
   )

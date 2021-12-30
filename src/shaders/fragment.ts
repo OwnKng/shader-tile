@@ -6,9 +6,9 @@ export const fragmentShader = /* glsl */ `
     varying vec2 particleuv; 
     varying vec2 vUv; 
     varying float vTime; 
-    varying vec2 vMouse; 
-    varying vec3 vColor; 
     varying float vWave; 
+    varying float vWaveEdge; 
+
 
     uniform sampler2D uTexture;
 
@@ -22,12 +22,11 @@ export const fragmentShader = /* glsl */ `
         if(strength < 0.2) discard;
 
         //_ strips
-        float colorX = mod(particleuv.y * 10.0, 1.0);
-        colorX = 0.5 + strength * colorX + (0.9 * vWave);
+        float colorStripe = mod(particleuv.y * 8.0, 1.0);
+        colorStripe = 0.5 + strength * colorStripe * 0.5 + (vWave * 0.2);
         
         //_ color
-        float colorStrength = (0.5 + strength * (1.0 - particleuv.x) * (1.0 - particleuv.y)); 
-        vec3 color = hsl2rgb(colorX, strength, strength);
+        vec3 color = hsl2rgb(colorStripe, strength, strength);
         
         //_ final color
         gl_FragColor = vec4(color, 1.0);
