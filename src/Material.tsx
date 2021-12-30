@@ -1,4 +1,3 @@
-/* eslint-disable react-hooks/exhaustive-deps */
 import * as THREE from "three"
 import { useMemo, useRef } from "react"
 import { useFrame } from "@react-three/fiber"
@@ -19,7 +18,7 @@ const Material = ({ texture }: any) => {
       uDepth: { value: 2.0 },
       uMouse: { value: new THREE.Vector2(0, 0) },
     }),
-    []
+    [texture, image]
   )
 
   useFrame(({ clock, mouse }) => {
