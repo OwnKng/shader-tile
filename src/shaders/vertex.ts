@@ -18,8 +18,7 @@ export const vertexShader = /* glsl */ `
     attribute vec3 pColor; 
 
     varying vec2 particleuv; 
-    varying vec2 vUv; 
-    varying float vTime; 
+
     varying float vWave;
     varying float vWaveEdge; 
 
@@ -35,7 +34,7 @@ export const vertexShader = /* glsl */ `
 
         //_ particle uv coords
         particleuv = offset.xy / uTextureSize;
-        vUv = uv; 
+ 
 
         //_ get the lighter image areas
         vec4 col = texture2D(uTexture, particleuv);
@@ -56,8 +55,8 @@ export const vertexShader = /* glsl */ `
         displaced.z += waveEdge * 10.0;
 
         //_ tails 
-        float rightTails = smoothstep(0.82, 1.0, particleuv.x); 
-        float leftTails = 1.0 - smoothstep(0.0, 0.3, particleuv.x);
+        float rightTails = smoothstep(0.75, 1.0, particleuv.x); 
+        float leftTails = 1.0 - smoothstep(0.0, 0.25, particleuv.x);
 
         displaced.x += rightTails * 200.0 * (uMouse.x + 1.0);
         displaced.x += leftTails * 200.0 * (uMouse.x - 1.0); 
@@ -73,7 +72,6 @@ export const vertexShader = /* glsl */ `
         gl_Position = projectionMatrix * mvPosition;
 
         //_ pass the varyings
-        vTime = uTime; 
         vWave = wave; 
         vWaveEdge = waveEdge; 
     }

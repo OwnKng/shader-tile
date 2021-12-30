@@ -5,7 +5,6 @@ export const fragmentShader = /* glsl */ `
     precision highp float;
     varying vec2 particleuv; 
     varying vec2 vUv; 
-    varying float vTime; 
     varying float vWave; 
     varying float vWaveEdge; 
 
@@ -22,8 +21,8 @@ export const fragmentShader = /* glsl */ `
         if(strength < 0.2) discard;
 
         //_ strips
-        float colorStripe = mod(particleuv.y * 8.0, 1.0);
-        colorStripe = 0.5 + strength * colorStripe * 0.5 + (vWave * 0.2);
+        float colorStripe = mod(particleuv.x * 8.0, 1.0);
+        colorStripe = 0.4 + strength * colorStripe * 0.5 + (vWave * 0.2);
         
         //_ color
         vec3 color = hsl2rgb(colorStripe, strength, strength + vWaveEdge);
