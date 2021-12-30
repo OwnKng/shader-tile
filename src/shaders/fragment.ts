@@ -26,7 +26,7 @@ export const fragmentShader = /* glsl */ `
         colorStripe = 0.5 + strength * colorStripe * 0.5 + (vWave * 0.2);
         
         //_ color
-        vec3 color = hsl2rgb(colorStripe, strength, strength);
+        vec3 color = hsl2rgb(colorStripe, strength, strength + vWaveEdge);
         
         //_ final color
         gl_FragColor = vec4(color, 1.0);
