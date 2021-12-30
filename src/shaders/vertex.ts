@@ -47,7 +47,7 @@ export const vertexShader = /* glsl */ `
         displaced.xy += (strength + noise(vec2(pindex * 0.1, uTime * 0.1))) * 10.0;
         displaced.z += (strength + noise(vec2(pindex * 0.1, uTime * 0.1))) * 40.0;
 
-        //_ wave
+        //_ interaction
         float wave = step(uMouse.y, particleuv.y);
         displaced.xyz += wave * 10.0;
 
@@ -57,7 +57,7 @@ export const vertexShader = /* glsl */ `
 
         displaced.x += rightTails * 200.0 * (uMouse.x + 1.0);
         displaced.x += leftTails * 200.0 * (uMouse.x - 1.0); 
-  
+      
         //_ scale the particles
         float psize = (noise(vec2(uTime, pindex) * 0.5) + 2.0);
         psize *= 0.6;

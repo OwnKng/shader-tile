@@ -21,9 +21,13 @@ export const fragmentShader = /* glsl */ `
         float strength = col.r * 0.21 + col.g * 0.71 + col.b * 0.07;
         if(strength < 0.2) discard;
 
+        //_ strips
+        float colorX = mod(particleuv.y * 10.0, 1.0);
+        colorX = 0.5 + strength * colorX + (0.9 * vWave);
+        
         //_ color
         float colorStrength = (0.5 + strength * (1.0 - particleuv.x) * (1.0 - particleuv.y)); 
-        vec3 color = hsl2rgb(0.6 + vWave * 0.4, 0.5 + vWave * 0.1, strength);
+        vec3 color = hsl2rgb(colorX, strength, strength);
         
         //_ final color
         gl_FragColor = vec4(color, 1.0);

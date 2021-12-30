@@ -28,7 +28,7 @@ const Panel = () => {
     const indices = new Uint16Array(num)
 
     for (let i = 0; i < num; i++) {
-      offsets[i * 3 + 0] = i % width
+      offsets[i * 3 + 0] = i % height
       offsets[i * 3 + 1] = Math.floor(i / width)
       offsets[i * 3 + 2] = 0
 
