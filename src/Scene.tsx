@@ -3,8 +3,7 @@ import Panel from "./Panel"
 import { Suspense } from "react"
 
 const Scene = () => (
-  <Canvas shadows camera={{ position: [-100, 80, 450] }}>
-    <ambientLight intensity={0.1} />
+  <Canvas camera={{ position: [-100, 80, 450] }}>
     <Suspense fallback={null}>
       <Panel />
     </Suspense>

@@ -1,15 +1,14 @@
 // @ts-nocheck
-import { useMemo, useRef } from "react"
+import { useMemo } from "react"
 import Material from "./Material"
 import { useTexture } from "@react-three/drei"
 
 const Panel = () => {
-  const ref = useRef<any>(null!)
-
   const texture = useTexture("one.png")
   const width = texture.image.width
   const height = texture.image.height
-  const num = width * height
+  const numPoints = width * height
+  const threshold = 130
 
   //_ vertices and index for the square shape
   const vertices = useMemo(
@@ -22,32 +21,56 @@ const Panel = () => {
 
   const index = useMemo(() => new Uint16Array([0, 2, 1, 2, 3, 1]), [])
 
-  //_ positions, indexes and UV coords for each pixel / shape
-  const { offsets, indices } = useMemo(() => {
-    const offsets = new Float32Array(num * 3)
-    const indices = new Uint16Array(num)
-
-    for (let i = 0; i < num; i++) {
-      offsets[i * 3 + 0] = i % height
-      offsets[i * 3 + 1] = Math.floor(i / width)
-      offsets[i * 3 + 2] = 0
-
-      indices[i] = i
-    }
-
-    return { offsets, indices }
-  }, [num, width, height])
-
   const uvs = useMemo(
     () => new Float32Array([0, 0, 0, 1.0, 1.0, 0, 1.0, 1.0]),
     []
   )
 
+  const { originalColors, numVisible } = useMemo(() => {
+    let numVisible = 0
+    const canvas = document.createElement("canvas")
+    const ctx = canvas.getContext("2d")
+
+    canvas.width = width
+    canvas.height = height
+
+    ctx.scale(1, -1)
+    ctx.drawImage(texture.image, 0, 0, width, height * -1)
+
+    const { data } = ctx.getImageData(0, 0, canvas.width, canvas.height)
+    const originalColors = Float32Array.from(data)
+
+    for (let i = 0; i < numPoints; i++) {
+      if (originalColors[i * 4 + 0] >= threshold) numVisible++
+    }
+
+    return { originalColors, numVisible }
+  }, [numPoints, texture, width, height])
+
+  //_ positions, indexes and UV coords for each pixel / shape
+  const { offsets, indices } = useMemo(() => {
+    const offsets = new Float32Array(numVisible * 3)
+    const indices = new Uint16Array(numVisible)
+
+    for (let i = 0, j = 0; i < numPoints; i++) {
+      if (originalColors[i * 4 + 0] >= threshold) {
+        offsets[j * 3 + 0] = i % width
+        offsets[j * 3 + 1] = Math.floor(i / width)
+        offsets[j * 3 + 2] = 0
+        indices[j] = i
+        j++
+      }
+    }
+
+    return { offsets, indices }
+  }, [numVisible, numPoints, width, originalColors])
+
+  console.log(numPoints, numVisible)
+
   return (
     <instancedMesh
       position={[-width / 2, -height / 2, 0]}
-      args={[null, null, num]}
-      ref={ref}
+      args={[null, null, numVisible]}
     >
       <bufferGeometry>
         <bufferAttribute

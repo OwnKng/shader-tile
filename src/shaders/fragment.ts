@@ -18,7 +18,6 @@ export const fragmentShader = /* glsl */ `
         //_ depth strength
         vec4 col = texture2D(uTexture, particleuv);
         float strength = col.r * 0.21 + col.g * 0.71 + col.b * 0.07;
-        if(strength < 0.2) discard;
 
         //_ strips
         float colorStripe = mod(particleuv.x * 8.0, 1.0);

@@ -54,7 +54,7 @@ export const vertexShader = /* glsl */ `
         displaced.xyz += wave * 10.0;
         displaced.z += waveEdge * 10.0;
 
-        //_ tails 
+        // //_ tails 
         float rightTails = smoothstep(0.75, 1.0, particleuv.x); 
         float leftTails = 1.0 - smoothstep(0.0, 0.25, particleuv.x);
 
