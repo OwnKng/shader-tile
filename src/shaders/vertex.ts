@@ -2,12 +2,12 @@ import { noise } from "./noise"
 
 export const vertexShader = /* glsl */ `
     precision highp float;
+
 	uniform mat4 modelViewMatrix;
 	uniform mat4 projectionMatrix;
 	uniform float uTime;
     uniform vec2 uTextureSize; 
-    uniform float uRandom;
-    uniform float uDepth; 
+
     uniform sampler2D uTexture;
     uniform vec2 uMouse; 
    
@@ -34,16 +34,14 @@ export const vertexShader = /* glsl */ `
 
         //_ particle uv coords
         particleuv = offset.xy / uTextureSize;
- 
+        float rndz = (random(pindex) + noise(vec2(pindex * 0.1, uTime * 0.1))) * 4.0; 
 
         //_ get the lighter image areas
         vec4 col = texture2D(uTexture, particleuv);
         float strength = col.r * 0.21 + col.g * 0.71 + col.b * 0.07;
 
-        float rndz = (random(pindex) + noise(vec2(pindex * 0.1, uTime * 0.1))) * 4.0;
-
         //_ randomise the particle position
-        displaced.xy += vec2(random(pindex) - 0.5, random(offset.x + pindex) - 0.5) * uRandom;
+        displaced.xy += vec2(random(pindex) - 0.5, random(offset.x + pindex) - 0.5) * 10.0;
         displaced.xy += (strength + noise(vec2(pindex * 0.1, uTime * 0.1))) * 10.0;
         displaced.z += (strength + noise(vec2(pindex * 0.1, uTime * 0.1))) * 40.0;
 
@@ -54,7 +52,7 @@ export const vertexShader = /* glsl */ `
         displaced.xyz += wave * 10.0;
         displaced.z += waveEdge * 10.0;
 
-        // //_ tails 
+        // * tails 
         float rightTails = smoothstep(0.75, 1.0, particleuv.x); 
         float leftTails = 1.0 - smoothstep(0.0, 0.2, particleuv.x);
 

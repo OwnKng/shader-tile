@@ -21,12 +21,10 @@ export const fragmentShader = /* glsl */ `
 
         //_ strips
         float colorStripe = mod(particleuv.y * 4.0, 1.0);
-        colorStripe = 0.5 + strength * colorStripe * 0.5 + (vWave * 0.1);
+        colorStripe = 0.5 + strength * colorStripe * 0.6 + (vWave * 0.1);
         
         //_ color
         vec3 color = hsl2rgb(colorStripe, strength, strength + vWaveEdge);
-        
-        //_ final color
         gl_FragColor = vec4(color, 1.0);
     }
 `

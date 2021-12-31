@@ -14,8 +14,6 @@ const Material = ({ texture }: any) => {
       uTime: { value: 0.0 },
       uTexture: { value: texture },
       uTextureSize: { value: new THREE.Vector2(image.width, image.height) },
-      uRandom: { value: 10.0 },
-      uDepth: { value: 2.0 },
       uMouse: { value: new THREE.Vector2(1.0, 1.0) },
     }),
     [texture, image]
@@ -27,13 +25,15 @@ const Material = ({ texture }: any) => {
 
     const x = THREE.MathUtils.lerp(
       ref.current.uniforms.uMouse.value.x,
-      mouse.x,
+      mouse.x || 0,
       0.1
     )
 
+    const yAdj = mouse.y / 2 + 0.5
+
     const y = THREE.MathUtils.lerp(
       ref.current.uniforms.uMouse.value.y,
-      mouse.y,
+      yAdj || 0.8,
       0.1
     )
 
