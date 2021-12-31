@@ -4,11 +4,11 @@ import Material from "./Material"
 import { useTexture } from "@react-three/drei"
 
 const Panel = () => {
-  const texture = useTexture("one.png")
+  const texture = useTexture("headshot.png")
   const width = texture.image.width
   const height = texture.image.height
   const numPoints = width * height
-  const threshold = 130
+  const threshold = 140
 
   //_ vertices and index for the square shape
   const vertices = useMemo(
@@ -47,6 +47,8 @@ const Panel = () => {
     return { originalColors, numVisible }
   }, [numPoints, texture, width, height])
 
+  console.log(numVisible)
+
   //_ positions, indexes and UV coords for each pixel / shape
   const { offsets, indices } = useMemo(() => {
     const offsets = new Float32Array(numVisible * 3)
@@ -64,8 +66,6 @@ const Panel = () => {
 
     return { offsets, indices }
   }, [numVisible, numPoints, width, originalColors])
-
-  console.log(numPoints, numVisible)
 
   return (
     <instancedMesh

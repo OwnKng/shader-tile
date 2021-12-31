@@ -56,7 +56,7 @@ export const vertexShader = /* glsl */ `
 
         // //_ tails 
         float rightTails = smoothstep(0.75, 1.0, particleuv.x); 
-        float leftTails = 1.0 - smoothstep(0.0, 0.25, particleuv.x);
+        float leftTails = 1.0 - smoothstep(0.0, 0.2, particleuv.x);
 
         displaced.x += rightTails * 200.0 * (uMouse.x + 1.0);
         displaced.x += leftTails * 200.0 * (uMouse.x - 1.0); 
