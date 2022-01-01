@@ -5,8 +5,8 @@ import { useTexture } from "@react-three/drei"
 
 const Panel = () => {
   const texture = useTexture("headshot.png")
-  const width = texture.image.width
-  const height = texture.image.height
+  const { width, height } = texture.image
+
   const numPoints = width * height
   const threshold = 140
 
@@ -20,11 +20,6 @@ const Panel = () => {
   )
 
   const index = useMemo(() => new Uint16Array([0, 2, 1, 2, 3, 1]), [])
-
-  const uvs = useMemo(
-    () => new Float32Array([0, 0, 0, 1.0, 1.0, 0, 1.0, 1.0]),
-    []
-  )
 
   const { originalColors, numVisible } = useMemo(() => {
     let numVisible = 0
@@ -46,8 +41,6 @@ const Panel = () => {
 
     return { originalColors, numVisible }
   }, [numPoints, texture, width, height])
-
-  console.log(numVisible)
 
   //_ positions, indexes and UV coords for each pixel / shape
   const { offsets, indices } = useMemo(() => {
@@ -77,7 +70,6 @@ const Panel = () => {
           attachObject={["attributes", "position"]}
           args={[vertices, 3]}
         />
-        <bufferAttribute attachObject={["attributes", "uv"]} args={[uvs, 2]} />
         <bufferAttribute
           attach='index'
           array={index}
