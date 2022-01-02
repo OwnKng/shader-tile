@@ -15,7 +15,7 @@ export const vertexShader = /* glsl */ `
 	attribute vec2 uv;
 	attribute vec3 offset;
     attribute float pindex; 
-    attribute vec3 pColor; 
+
 
     varying vec2 particleuv; 
 
