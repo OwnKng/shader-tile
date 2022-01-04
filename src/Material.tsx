@@ -33,7 +33,7 @@ const Material = ({ texture }: any) => {
 
     const y = THREE.MathUtils.lerp(
       ref.current.uniforms.uMouse.value.y,
-      yAdj || 0.8,
+      yAdj || 0.3,
       0.1
     )
 

@@ -16,12 +16,9 @@ export const vertexShader = /* glsl */ `
 	attribute vec3 offset;
     attribute float pindex; 
 
-
     varying vec2 particleuv; 
-
     varying float vWave;
     varying float vWaveEdge; 
-    varying float vTime; 
     varying float vStrength; 
 
 
@@ -46,6 +43,10 @@ export const vertexShader = /* glsl */ `
         displaced.xy += (strength + cnoise(vec3(pindex * 0.1, uTime * 0.1, 0.1))) * 1.0;
         displaced.z += strength * 50.0;
 
+        //_ distort towards edge
+        float distort = smoothstep(0.9, 1.25, distance(particleuv, vec2(0.1, 1.0)));
+        displaced.xyz += distort * rndz * 2.0;
+
         //_ interaction
         float wave = step(uMouse.y, particleuv.y);
         float waveEdge = step(uMouse.y, particleuv.y) + (1.0 - step(uMouse.y + 0.01, particleuv.y)) - 1.0;
@@ -55,7 +56,7 @@ export const vertexShader = /* glsl */ `
 
         //_ scale the particles
         float psize = (cnoise(vec3(uTime, pindex, 1.0) * 0.5) + 2.0);
-        psize *= 0.5;
+        psize *= 0.5 * 1.0 - distort;
         psize *= max(strength, 0.2);
          
         vec4 mvPosition = modelViewMatrix * vec4(displaced, 1.0);
@@ -66,7 +67,6 @@ export const vertexShader = /* glsl */ `
         //_ pass the varyings
         vWave = wave; 
         vWaveEdge = waveEdge; 
-        vTime = uTime;
         vStrength = strength;
     }
 `
