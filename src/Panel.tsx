@@ -8,7 +8,7 @@ const Panel = () => {
   const { width, height } = texture.image
 
   const numPoints = width * height
-  const threshold = 140
+  const threshold = 50
 
   //_ vertices and index for the square shape
   const vertices = useMemo(
@@ -62,7 +62,7 @@ const Panel = () => {
 
   return (
     <instancedMesh
-      position={[-width / 2, -height / 2, 0]}
+      position={[-width / 2, -height / 3, 0]}
       args={[null, null, numVisible]}
     >
       <bufferGeometry>
