@@ -8,7 +8,6 @@ export const fragmentShader = /* glsl */ `
     varying float vWaveEdge; 
     varying float vStrength; 
 
-
     ${noise}
     ${hsl2rgb}
 
@@ -19,8 +18,10 @@ export const fragmentShader = /* glsl */ `
         float details = cnoise(vec3(bigNoise, 8.0, 8.0)); 
         details = floor(details);
 
-        float x = max(0.2, vWave);
-        float direction = (details + x) * 0.4; 
+        float y = abs(vWave - 1.0); 
+
+        float x = max(0.25, y);
+        float direction = (x + details) * 0.4; 
  
         //_ color
         vec3 color = hsl2rgb(0.6 + direction * x, vStrength, vStrength + vWaveEdge);

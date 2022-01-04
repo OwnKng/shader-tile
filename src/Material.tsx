@@ -14,30 +14,12 @@ const Material = ({ texture }: any) => {
       uTime: { value: 0.0 },
       uTexture: { value: texture },
       uTextureSize: { value: new THREE.Vector2(image.width, image.height) },
-      uMouse: { value: new THREE.Vector2(1.0, 1.0) },
     }),
     [texture, image]
   )
 
   useFrame(({ clock, mouse }) => {
-    const time = clock.getElapsedTime()
-    ref.current.uniforms.uTime.value = time
-
-    const x = THREE.MathUtils.lerp(
-      ref.current.uniforms.uMouse.value.x,
-      mouse.x || 0,
-      0.1
-    )
-
-    const yAdj = mouse.y / 2 + 0.5
-
-    const y = THREE.MathUtils.lerp(
-      ref.current.uniforms.uMouse.value.y,
-      yAdj || 0.3,
-      0.1
-    )
-
-    ref.current.uniforms.uMouse.value = new THREE.Vector2(x, y)
+    ref.current.uniforms.uTime.value = clock.getElapsedTime()
   })
 
   return (
