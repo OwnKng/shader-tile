@@ -23,10 +23,6 @@ export const vertexShader = /* glsl */ `
     varying float vRidge; 
     varying float vEyes; 
 
-    float random(float n) {
-	    return fract(sin(n) * 43758.5453123);
-    }
-
     ${noise}
  
     void main() {
@@ -40,7 +36,8 @@ export const vertexShader = /* glsl */ `
         float strength = col.r * 0.21 + col.g * 0.71 + col.b * 0.07;
 
         //_ particle position
-        displaced.z += strength * 10.0;
+        float time = sin(uTime * 0.5) * 0.5 + 0.5;
+        displaced.z += strength * 20.0 * time;
 
         //_ size
         float pSize = strength; 
