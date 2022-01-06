@@ -7,24 +7,18 @@ export const fragmentShader = /* glsl */ `
     varying float vWave; 
     varying float vWaveEdge; 
     varying float vStrength; 
+    varying float vTime; 
+    varying vec2 vMouse; 
+    varying float vRidge; 
+    varying float vEyes;
 
     ${noise}
     ${hsl2rgb}
 
     void main() {
-   
-        //_  circular patterns
-        float bigNoise = cnoise(vec3(particleuv.y, particleuv.x, 0.1)) * 8.0;
-        float details = cnoise(vec3(bigNoise, 8.0, 8.0)); 
-        details = floor(details);
-
-        float y = abs(vWave - 1.0); 
-
-        float x = max(0.25, y);
-        float direction = (x + details) * 0.4; 
- 
-        //_ color
-        vec3 color = hsl2rgb(0.6 + direction * x, vStrength, vStrength + vWaveEdge);
+        float time = sin(vTime * 0.5) * 0.5 + 0.5;
+        float noise = cnoise(vec3(particleuv, time * 0.5)) * vRidge;
+        vec3 color = hsl2rgb(0.8 + noise * 0.5, vRidge, 0.9 - vRidge * 0.1);
         gl_FragColor = vec4(color, 1.0);
     }
 `

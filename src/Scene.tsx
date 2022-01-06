@@ -4,7 +4,7 @@ import { Suspense } from "react"
 
 const Scene = () => (
   <Canvas
-    camera={{ position: [-20, 60, 280] }}
+    camera={{ position: [-20, 40, 280] }}
     onCreated={({ camera }) => camera.lookAt(0, 40, 0)}
   >
     <Suspense fallback={null}>

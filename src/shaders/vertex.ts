@@ -7,6 +7,7 @@ export const vertexShader = /* glsl */ `
 	uniform mat4 projectionMatrix;
 	uniform float uTime;
     uniform vec2 uTextureSize; 
+    uniform vec2 uMouse; 
 
     uniform sampler2D uTexture;
 
@@ -19,7 +20,10 @@ export const vertexShader = /* glsl */ `
     varying float vWave;
     varying float vWaveEdge; 
     varying float vStrength; 
-
+    varying float vTime; 
+    varying vec2 vMouse; 
+    varying float vRidge; 
+    varying float vEyes; 
 
     float random(float n) {
 	    return fract(sin(n) * 43758.5453123);
@@ -32,41 +36,47 @@ export const vertexShader = /* glsl */ `
 
         //_ particle uv coords
         particleuv = offset.xy / uTextureSize;
-        float rndz = (random(pindex) + cnoise(vec3(pindex, uTime * 0.25, 1.0))) * 4.0; 
 
         //_ get the lighter image areas
         vec4 col = texture2D(uTexture, particleuv);
         float strength = col.r * 0.21 + col.g * 0.71 + col.b * 0.07;
 
-        //_ randomise the particle position
-        displaced.xy += (strength + cnoise(vec3(pindex * 0.1, uTime * 0.25, 0.1))) * 1.0;
-        displaced.z += strength * 50.0;
+        //_ particle position
+        displaced.z += strength * 20.0;
 
-        //_ distort towards edge
-        float distort = smoothstep(0.9, 1.25, distance(particleuv, vec2(0.1, 1.0)));
-        displaced.xyz += distort * rndz * 2.0;
+        //_ eyeline
+        float eyeLevel = 0.56; 
+        float eye = step(eyeLevel, particleuv.y);
+        float eyeEdge = step(eyeLevel, particleuv.y) + (1.0 - step(eyeLevel + 0.03, particleuv.y)) - 1.0;
 
-        //_ interaction
-        float eyeLevel = 0.55; 
-        float wave = step(eyeLevel, particleuv.y);
-        float waveEdge = step(eyeLevel, particleuv.y) + (1.0 - step(eyeLevel + 0.03, particleuv.y)) - 1.0;
+        displaced.xyz += eye * 2.0;
+        displaced.z += eyeEdge * 10.0;
 
-        displaced.xyz += wave * 2.0;
-        displaced.z += waveEdge * 40.0;
+        //_ tear
+        float time = sin(uTime) * 0.5 + 0.5;
+        float edge = 0.6;
+        vec2 wavePattern = vec2(particleuv.x + sin(particleuv.y * 25.0), particleuv.y + sin(particleuv.x * 25.0)); 
+        edge += cnoise(vec3(wavePattern + time * 0.25, strength)) * 0.1; 
 
-        //_ scale the particles
-        float psize = (cnoise(vec3(uTime, pindex, 1.0) * 0.5) + 2.0);
-        psize *= 0.5 * 1.0 - distort;
-        psize *= max(strength, 0.2);
-         
+        float alpha = step(edge, distance(vec2(particleuv.xy), vec2(0.0)));
+        float alphaEdge = alpha + (1.0 - step(edge + 0.2, distance(vec2(particleuv.xy), vec2(0.0)))) - 1.0;
+        displaced.z += alphaEdge * 2.0;
+
+        //_ size
         vec4 mvPosition = modelViewMatrix * vec4(displaced, 1.0);
-        mvPosition.xyz += position * psize;
-         
+        float pSize = strength * ((alphaEdge + 2.0) / 2.0);
+        pSize *= 0.8;
+        pSize *= 1.0 - eyeEdge; 
+
+        //_ final position
+        mvPosition.xyz += position * pSize;
         gl_Position = projectionMatrix * mvPosition;
 
         //_ pass the varyings
-        vWave = wave; 
-        vWaveEdge = waveEdge; 
-        vStrength = strength;
+        vTime = uTime; 
+        vStrength = strength; 
+        vMouse = uMouse; 
+        vRidge = alphaEdge; 
+        vEyes = eyeEdge; 
     }
 `

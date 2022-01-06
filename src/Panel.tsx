@@ -62,7 +62,7 @@ const Panel = () => {
 
   return (
     <instancedMesh
-      position={[-width / 2, -height / 3, 0]}
+      position={[-width / 2, -width / 2, 0]}
       args={[null, null, numVisible]}
     >
       <bufferGeometry>
