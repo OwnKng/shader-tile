@@ -15,13 +15,7 @@ export const vertexShader = /* glsl */ `
 	attribute vec2 uv;
 	attribute vec3 offset;
     attribute float pindex; 
-
-    varying vec2 particleuv; 
-    varying float vStrength; 
-    varying float vTime; 
-    varying vec2 vMouse; 
-    varying float vRidge; 
-    varying float vEyes; 
+    varying vec2 vParticleUv; 
 
     ${noise}
  
@@ -29,20 +23,20 @@ export const vertexShader = /* glsl */ `
         vec3 displaced = offset; 
 
         //_ particle uv coords
-        particleuv = offset.xy / uTextureSize;
+        vec2 particleuv = offset.xy / uTextureSize;
 
         //_ get the lighter image areas
         vec4 col = texture2D(uTexture, particleuv);
         float strength = col.r * 0.21 + col.g * 0.71 + col.b * 0.07;
+        
 
         //_ particle position
-        float time = sin(uTime * 0.5) * 0.5 + 0.5;
-        displaced.z += strength * 20.0 * time;
+        displaced.z += strength * 10.0;
 
         //_ size
         float pSize = strength; 
-        pSize *= 0.6; 
-        pSize = max(0.6, strength);
+        pSize *= 0.4; 
+        pSize = max(0.2, strength);
 
         //_ final position
         vec4 mvPosition = modelViewMatrix * vec4(displaced, 1.0);
@@ -50,8 +44,6 @@ export const vertexShader = /* glsl */ `
         gl_Position = projectionMatrix * mvPosition;
 
         //_ pass the varyings
-        vTime = uTime; 
-        vStrength = strength; 
-        vMouse = uMouse; 
+        vParticleUv = particleuv; 
     }
 `
