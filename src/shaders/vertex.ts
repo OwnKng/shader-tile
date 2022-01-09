@@ -31,7 +31,7 @@ export const vertexShader = /* glsl */ `
         
 
         //_ particle position
-        displaced.z += strength * 10.0;
+        displaced.z += strength * 20.0;
 
         //_ size
         float pSize = strength; 

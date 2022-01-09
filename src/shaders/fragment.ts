@@ -26,7 +26,7 @@ export const fragmentShader = /* glsl */ `
     void main() {
         //_ generate a grid
         vec2 transUV = vParticleUv; 
-        float cells = 18.0; 
+        float cells = 40.0; 
         vec2 grid = vec2(cells);
         transUV *= grid;
 
@@ -43,7 +43,7 @@ export const fragmentShader = /* glsl */ `
         float strength = col.r * 0.21 + col.g * 0.71 + col.b * 0.07;
 
         //* speed
-        vec2 vel = vec2(uTime * max(grid.x, grid.y)); 
+        vec2 vel = vec2(uTime * 0.5 * max(grid.x, grid.y)); 
         vel *= vec2(0.0, 1.0) * random(0.0 + ipos.x); 
 
         //* Assign a random value base on the integer coord
@@ -51,10 +51,10 @@ export const fragmentShader = /* glsl */ `
         light = 1.0 - light; 
 
         //_ color
-        vec3 color = hsl2rgb(0.5 + strength * 0.1, 0.5, light * strength);
+        vec3 color = hsl2rgb(0.45 + strength * 0.1, 0.7, light * strength);
 
         //* Margins
-        float alpha = step(0.05, fpos.x);
+        float alpha = step(0.1, fpos.x);
 
         gl_FragColor = vec4(color, alpha);
     }
